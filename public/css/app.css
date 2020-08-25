@@ -1605,3 +1605,7 @@ body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
 
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5) !important;
+}
+
