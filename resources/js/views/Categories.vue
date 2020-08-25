@@ -31,7 +31,7 @@
 				    		<td><img :src="`${$store.state.serverPath}/app/storage/${category.image}`"></td>
 				    		<td>
 				    			<button class="btn btn-primary btn-sm"><span class="fa fa-edit"></span></button>
-				    			<button class="btn btn-danger btn-sm"><span class="fa fa-delete"></span></button>
+				    			<button class="btn btn-danger btn-sm" @click="deleteCategory(category)"><span class="fa fa-trash"></span></button>
 				    		</td>
 				    	</tr>
 				    </tbody>
@@ -135,6 +135,10 @@
     				message: 'Category stored successfuly',
     				time: 5000
     			});
+
+    			this.categoryData.name = '';
+    			this.categoryData.image = '';
+
                } catch (error) {
                  switch (error.response.status) {
                  	case 422: 
@@ -149,6 +153,31 @@
                  }
                }
 			},
+
+			deleteCategory: async function(category) {
+            	if (!window.confirm(`Are you you want to delete a category ${category.name}`)) {
+                    return;
+            	}
+            	try {
+                    await categoryService.deleteCategory(category.id);
+
+                    this.flashMessage.success({
+    					message: 'category delered',
+    					time: 5000
+    				});
+
+                    this.categories = this.categories.filter(obj => {
+                    	return obj.id != category.id;
+                    })
+
+            	} catch (error) {
+                    this.flashMessage.error({
+    					message: error.response.data.message,
+    					time: 5000
+    				});
+            	}
+			},
+
 			hideNewCategoryModal() {
                this.$refs.newCategoryModal.hide();
 			},

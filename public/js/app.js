@@ -2171,33 +2171,35 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   message: 'Category stored successfuly',
                   time: 5000
                 });
-                _context2.next = 22;
+                this.categoryData.name = '';
+                this.categoryData.image = '';
+                _context2.next = 24;
                 break;
 
-              case 13:
-                _context2.prev = 13;
+              case 15:
+                _context2.prev = 15;
                 _context2.t0 = _context2["catch"](3);
                 _context2.t1 = _context2.t0.response.status;
-                _context2.next = _context2.t1 === 422 ? 18 : 20;
+                _context2.next = _context2.t1 === 422 ? 20 : 22;
                 break;
 
-              case 18:
-                this.errors = _context2.t0.response.data.errors;
-                return _context2.abrupt("break", 22);
-
               case 20:
+                this.errors = _context2.t0.response.data.errors;
+                return _context2.abrupt("break", 24);
+
+              case 22:
                 this.flashMessage.error({
                   message: 'Category not saved',
                   time: 5000
                 });
-                return _context2.abrupt("break", 22);
+                return _context2.abrupt("break", 24);
 
-              case 22:
+              case 24:
               case "end":
                 return _context2.stop();
             }
           }
-        }, _callee2, this, [[3, 13]]);
+        }, _callee2, this, [[3, 15]]);
       }));
 
       function createCategory() {
@@ -2205,6 +2207,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
 
       return createCategory;
+    }(),
+    deleteCategory: function () {
+      var _deleteCategory = _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3(category) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                if (window.confirm("Are you you want to delete a category ".concat(category.name))) {
+                  _context3.next = 2;
+                  break;
+                }
+
+                return _context3.abrupt("return");
+
+              case 2:
+                _context3.prev = 2;
+                _context3.next = 5;
+                return _Services_category_service__WEBPACK_IMPORTED_MODULE_1__["deleteCategory"](category.id);
+
+              case 5:
+                this.flashMessage.success({
+                  message: 'category delered',
+                  time: 5000
+                });
+                this.categories = this.categories.filter(function (obj) {
+                  return obj.id != category.id;
+                });
+                _context3.next = 12;
+                break;
+
+              case 9:
+                _context3.prev = 9;
+                _context3.t0 = _context3["catch"](2);
+                this.flashMessage.error({
+                  message: _context3.t0.response.data.message,
+                  time: 5000
+                });
+
+              case 12:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3, this, [[2, 9]]);
+      }));
+
+      function deleteCategory(_x) {
+        return _deleteCategory.apply(this, arguments);
+      }
+
+      return deleteCategory;
     }(),
     hideNewCategoryModal: function hideNewCategoryModal() {
       this.$refs.newCategoryModal.hide();
@@ -66764,7 +66817,22 @@ var render = function() {
                     })
                   ]),
                   _vm._v(" "),
-                  _vm._m(1, true)
+                  _c("td", [
+                    _vm._m(1, true),
+                    _vm._v(" "),
+                    _c(
+                      "button",
+                      {
+                        staticClass: "btn btn-danger btn-sm",
+                        on: {
+                          click: function($event) {
+                            return _vm.deleteCategory(category)
+                          }
+                        }
+                      },
+                      [_c("span", { staticClass: "fa fa-trash" })]
+                    )
+                  ])
                 ])
               }),
               0
@@ -66920,14 +66988,8 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("td", [
-      _c("button", { staticClass: "btn btn-primary btn-sm" }, [
-        _c("span", { staticClass: "fa fa-edit" })
-      ]),
-      _vm._v(" "),
-      _c("button", { staticClass: "btn btn-danger btn-sm" }, [
-        _c("span", { staticClass: "fa fa-delete" })
-      ])
+    return _c("button", { staticClass: "btn btn-primary btn-sm" }, [
+      _c("span", { staticClass: "fa fa-edit" })
     ])
   }
 ]
@@ -84172,13 +84234,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!***************************************************!*\
   !*** ./resources/js/Services/category_service.js ***!
   \***************************************************/
-/*! exports provided: createCategory, loadCategories */
+/*! exports provided: createCategory, loadCategories, deleteCategory */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "createCategory", function() { return createCategory; });
 /* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "loadCategories", function() { return loadCategories; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "deleteCategory", function() { return deleteCategory; });
 /* harmony import */ var _http_service__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./http_service */ "./resources/js/Services/http_service.js");
 
 function createCategory(data) {
@@ -84186,6 +84249,9 @@ function createCategory(data) {
 }
 function loadCategories() {
   return Object(_http_service__WEBPACK_IMPORTED_MODULE_0__["http"])().get('/categories');
+}
+function deleteCategory(id) {
+  return Object(_http_service__WEBPACK_IMPORTED_MODULE_0__["http"])()["delete"]("/categories/".concat(id));
 }
 
 /***/ }),

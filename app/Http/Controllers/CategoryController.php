@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class CategoryController extends Controller
 {
@@ -14,7 +15,7 @@ class CategoryController extends Controller
      */
     public function index()
     {
-        $categories = Category::paginate();
+        $categories = Category::orderBy('created_at', 'desc')->paginate();
 
         return response()->json($categories, 200);
     }
@@ -97,6 +98,17 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        if ($category->delete()) {
+            Storage::delete($category->image);
+            return response()->json([
+                'message' => 'Category deleted successfully', 
+                'status_code' => 200
+            ], 200);
+        } else {
+            return response()->json([
+                'message' => 'Category not deleted', 
+                'status_code' => 500
+            ], 500);
+        }
     }
 }
