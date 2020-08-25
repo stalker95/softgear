@@ -19,13 +19,16 @@
 					<thead>
 					<tr>
 						<td>Id</td>
+						<td>name</td>
+						<td>image</td>
+						<td>Actions</td>
 					</tr>
 				     </thead>
 				    <tbody>
-				    	<tr>
-				    		<td>1</td>
-				    		<td>Shirt</td>
-				    		<td>image</td>
+				    	<tr v-for="(category, index) in categories" :key="index">
+				    		<td>{{ category.id }}</td>
+				    		<td>{{ category.name }}</td>
+				    		<td><img :src="`${$store.state.serverPath}/app/storage/${category.image}`"></td>
 				    		<td>
 				    			<button class="btn btn-primary btn-sm"><span class="fa fa-edit"></span></button>
 				    			<button class="btn btn-danger btn-sm"><span class="fa fa-delete"></span></button>
@@ -81,14 +84,32 @@
 	export default {
 		name: 'category',
 		data() {
-			return { categoryData: {
+			return { 
+			    categories: [],
+				categoryData: {
 				name: '',
 				image: ""
 			},
 			errors: {}
 		  } 
 		},
+		mounted() {
+			this.loadCategories();
+		},
 		methods: {
+			loadCategories: async function() {
+                try {
+                	const response = await categoryService.loadCategories();
+                	this.categories = response.data.data;
+                	console.log(response);
+                } catch(error) {
+                	this.flashMessage.error({
+    						message: error,
+    						time: 5000
+    					});
+
+                }
+			},
 			attachImage() {
                this.categoryData.image = this.$refs.newCategoryImage.files[0];
                let reader = new FileReader();
@@ -108,13 +129,22 @@
                try {
                	const response = await categoryService.createCategory(formData);
                	console.log(response);
+               	this.categories.unshift(response.data);
+               	this.hideNewCategoryModal();
+               	this.flashMessage.success({
+    				message: 'Category stored successfuly',
+    				time: 5000
+    			});
                } catch (error) {
                  switch (error.response.status) {
                  	case 422: 
                  		this.errors = error.response.data.errors;
                  		break;
                  	default: 
-                 		alert('errors');
+                 		this.flashMessage.error({
+    						message: 'Category not saved',
+    						time: 5000
+    					});
                  		break;
                  }
                }

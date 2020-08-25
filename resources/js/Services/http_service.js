@@ -3,7 +3,7 @@ import store from '../store';
 
 export function http() {
 	return axios.create({
-		baseUrl: stote.state.baseUrl
+		baseUrl: store.state.baseUrl
 	})
 }
 

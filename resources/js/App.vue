@@ -31,6 +31,7 @@
 
   </div>
   <!-- End of Page Wrapper -->
+  <FlashMessage position="right top"></FlashMessage>
 	</main>
 </template>
 
