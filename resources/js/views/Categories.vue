@@ -43,12 +43,18 @@
         	 <div class="form-group">
     			<label for="name">Email Name</label>
     			<input type="text" class="form-control" v-model="categoryData.name" placeholder="Enter category" id="name" aria-describedby="emailHelp">
+    			<!--<div class="invalid-feedback" v-if="errors.name">
+    				<p>{{ errors.name }}</p>
+    			</div> -->
     			<small class="form-text text-muted">We'll never share your email with anyone else.</small>
   			</div>
 
   			<div class="form-group">
     			<label for="name">Choose image</label>
-    			<input type="file" v-on:change="attachImage" class="form-control"  placeholder="Enter category" id="image" aria-describedby="emailHelp">
+    			<div v-if="categoryData.image.name">
+    				<img src="" ref="newCategoryImageDisplay" style="width:200px;">
+    			</div>
+    			<input type="file" v-on:change="attachImage" ref="newCategoryImage" class="form-control"  placeholder="Enter category" id="image" aria-describedby="emailHelp">
     			<small class="form-text text-muted">We'll never share your email with anyone else.</small>
   			</div>
 
@@ -68,6 +74,7 @@
 </template>
 
 <script >
+	import * as categoryService from '../Services/category_service';
 	export default {
 		name: 'category',
 		data() {
@@ -79,10 +86,27 @@
 		},
 		methods: {
 			attachImage() {
+               this.categoryData.image = this.$refs.newCategoryImage.files[0];
+               let reader = new FileReader();
+               reader.addEventListener('load', function() {
+                   this.$refs.newCategoryImageDisplay.src = reader.result;
+               }.bind(this), false);
+
+               reader.readAsDataURL(this.categoryData.image);
 
 			},
-			createCategory() {
+			createCategory: async function() {
+               let formData = new FormData();
 
+               formData.append('name', this.categoryData.name);
+               formData.append('image', this.categoryData.image);
+
+               try {
+               	const response = await categoryService.createCategory(formData);
+               	console.log(response);
+               } catch (error) {
+                 alert('error');
+               }
 			},
 			hideNewCategoryModal() {
                this.$refs.newCategoryModal.hide();
