@@ -2065,6 +2065,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   name: 'category',
@@ -2073,7 +2076,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       categoryData: {
         name: '',
         image: ""
-      }
+      },
+      errors: {}
     };
   },
   methods: {
@@ -2102,15 +2106,25 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 response = _context.sent;
                 console.log(response);
-                _context.next = 13;
+                _context.next = 19;
                 break;
 
               case 10:
                 _context.prev = 10;
                 _context.t0 = _context["catch"](3);
-                alert('error');
+                _context.t1 = _context.t0.response.status;
+                _context.next = _context.t1 === 422 ? 15 : 17;
+                break;
 
-              case 13:
+              case 15:
+                this.errors = _context.t0.response.data.errors;
+                return _context.abrupt("break", 19);
+
+              case 17:
+                alert('errors');
+                return _context.abrupt("break", 19);
+
+              case 19:
               case "end":
                 return _context.stop();
             }
@@ -66707,6 +66721,12 @@ var render = function() {
                     }
                   }),
                   _vm._v(" "),
+                  _vm.errors.name
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _c("p", [_vm._v(_vm._s(_vm.errors.name[0]))])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" -\n    \t\t\t"),
                   _c("small", { staticClass: "form-text text-muted" }, [
                     _vm._v("We'll never share your email with anyone else.")
                   ])
@@ -66739,6 +66759,12 @@ var render = function() {
                     on: { change: _vm.attachImage }
                   }),
                   _vm._v(" "),
+                  _vm.errors.image
+                    ? _c("div", { staticClass: "invalid-feedback" }, [
+                        _c("p", [_vm._v(_vm._s(_vm.errors.image[0]))])
+                      ])
+                    : _vm._e(),
+                  _vm._v(" -\n    \t\t\t"),
                   _c("small", { staticClass: "form-text text-muted" }, [
                     _vm._v("We'll never share your email with anyone else.")
                   ])

@@ -43,9 +43,9 @@
         	 <div class="form-group">
     			<label for="name">Email Name</label>
     			<input type="text" class="form-control" v-model="categoryData.name" placeholder="Enter category" id="name" aria-describedby="emailHelp">
-    			<!--<div class="invalid-feedback" v-if="errors.name">
-    				<p>{{ errors.name }}</p>
-    			</div> -->
+    			<div class="invalid-feedback" v-if="errors.name">
+    				<p>{{ errors.name[0] }}</p>
+    			</div> -
     			<small class="form-text text-muted">We'll never share your email with anyone else.</small>
   			</div>
 
@@ -55,6 +55,9 @@
     				<img src="" ref="newCategoryImageDisplay" style="width:200px;">
     			</div>
     			<input type="file" v-on:change="attachImage" ref="newCategoryImage" class="form-control"  placeholder="Enter category" id="image" aria-describedby="emailHelp">
+    			<div class="invalid-feedback" v-if="errors.image">
+    				<p>{{ errors.image[0] }}</p>
+    			</div> -
     			<small class="form-text text-muted">We'll never share your email with anyone else.</small>
   			</div>
 
@@ -81,7 +84,8 @@
 			return { categoryData: {
 				name: '',
 				image: ""
-			}
+			},
+			errors: {}
 		  } 
 		},
 		methods: {
@@ -105,7 +109,14 @@
                	const response = await categoryService.createCategory(formData);
                	console.log(response);
                } catch (error) {
-                 alert('error');
+                 switch (error.response.status) {
+                 	case 422: 
+                 		this.errors = error.response.data.errors;
+                 		break;
+                 	default: 
+                 		alert('errors');
+                 		break;
+                 }
                }
 			},
 			hideNewCategoryModal() {
